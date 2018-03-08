@@ -1,0 +1,56 @@
+<style lang="less">
+  .container{
+
+  }
+  .btn-group{
+    position: fixed;
+    bottom: 0;
+    width:100%;
+    margin-bottom:140rpx;
+    .btn{
+      background: transparent;
+      width:80%;
+      margin-bottom:30rpx;
+      color: #666;
+    }
+  }
+</style>
+<template>
+  <view class="container">
+    <view class="btn-group">
+      <button class="btn" @tap="gotoPage('question')">开始答题</button>
+      <button class="btn" @tap="gotoPage('list')">知识列表</button>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Home extends wepy.page {
+    config = {
+      navigationBarTitleText: 'test'
+    }
+    components = {
+    }
+    data = {}
+
+    computed = {
+
+    }
+
+    methods = {
+      gotoPage (page) {
+        wepy.navigateTo({
+          url: `/pages/${page}`
+        })
+      }
+    }
+
+    onLoad() {
+      this.$parent.getUserInfo(function (userInfo) {
+        console.log(userInfo)
+      })
+    }
+  }
+</script>

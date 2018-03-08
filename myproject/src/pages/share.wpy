@@ -1,0 +1,181 @@
+<style lang="less">
+  .canvas-container{
+    display: none;
+  }
+  .showShare{
+    display: block;
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background: rgba(0,0,0,0.1);
+    /*border:1px solid #000;*/
+    text-align: center;
+    .inner-container{
+      position: absolute;
+      left:50%;
+      top:50%;
+      transform: translate(-50%,-50%);
+      .canvas{
+        display: block;
+      }
+      .btn{
+        border:1px solid #000;
+      }
+    }
+  }
+</style>
+<template>
+  <view class="container">
+    <view class="score">
+      您一共答对了{{rightNum}}题，获得{{honnerName}}称号！
+    </view>
+    <view class="btn-group">
+      <button @tap="share()">炫耀成绩</button>
+      <button open-type="share">考验朋友</button>
+      <button @tap="gotoList()">学习更多</button>
+    </view>
+  </view>
+  <view class="canvas-container {{showShare?'showShare':''}}" @tap="canvasOptions">
+    <view class="inner-container" >
+      <view class="canvas" @tap.stop="notHide">
+        <canvas style="width: 300px; height: 400px;" canvas-id="share" ></canvas>
+      </view>
+      <view class="btn" @tap.stop="save">保存图片</view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Share extends wepy.page {
+    config = {
+      navigationBarTitleText: 'test'
+    }
+    components = {
+    }
+    data = {
+      rightNum: 0,
+      showShare: false,
+      ctx: null
+    }
+
+    computed = {
+      honnerName() {
+        if (this.rightNum < 3) {
+          return '青铜宝宝'
+        }
+        if (this.rightNum < 6) {
+          return '黄金答题者'
+        }
+        if (this.rightNum < 9) {
+          return '钻石答题者'
+        }
+        if (this.rightNum > 9) {
+          return '最强王者'
+        }
+      }
+    }
+
+    methods = {
+      gotoList() {
+        wepy.navigateTo({url: `/pages/list`})
+      },
+      share() {
+        this.showShare = true
+        this.$apply()
+        console.log(this)
+
+        this.ctx.setFillStyle('#ffffff')
+        this.ctx.rect(0, 0, 300, 400)
+        this.ctx.fill()
+        this.ctx.drawImage('/img/logo.jpg', 200, 300, 100, 100)
+        // this.ctx.draw(true)
+        this.ctx.setFillStyle('#000000')
+        this.ctx.setFontSize(80)
+        this.ctx.fillText('Hello', 80, 80)
+        this.ctx.draw()
+      },
+      canvasOptions(event) {
+        console.log(event)
+        this.showShare = false
+      },
+      notHide(e) {
+        // console.log(e)
+      },
+      save() {
+        console.log('save')
+        if (wepy.saveImageToPhotosAlbum && wepy.canvasToTempFilePath && wepy.showToast) {
+          this.ctx.draw(true, setTimeout(function() {
+            wepy.canvasToTempFilePath({
+              canvasId: 'share',
+              success: function(res) {
+                console.log(res)
+                wepy.saveImageToPhotosAlbum({
+                  filePath: res.tempFilePath,
+                  success: function(res) {
+                    wepy.showToast({
+                      title: `保存成功!`,
+                      icon: 'none'
+                    })
+                  },
+                  fail: function(res) {
+                    wepy.showToast({
+                      title: '保存失败!',
+                      icon: 'none'
+                    })
+                  }
+                })
+              },
+              fail: function(res) {
+                wepy.showToast({
+                  title: '保存失败!',
+                  icon: 'none'
+                })
+              },
+              complete(res) {
+                console.log('complete')
+              }
+            })
+          }, 100))
+        } else {
+          wepy.showToast({
+            title: `您的微信版本太低，请升级后再尝试。`,
+            icon: 'none'
+          })
+        }
+      }
+    }
+
+    onShareAppMessage(options) {
+      // console.log(options.webViewUrl)
+      return {
+        title: '我在这里等你一起来答题！',
+        path: `/pages/home`,
+        success: function(res) {
+          // 转发成功
+          wepy.showToast({
+            title: '转发成功',
+            icon: 'none',
+            duration: 500
+          })
+        },
+        fail: function(res) {
+          // 转发失败
+          wepy.showToast({
+            title: '转发失败',
+            icon: 'none',
+            duration: 500
+          })
+        }
+      }
+    }
+    onLoad(options) {
+      console.log(options)
+      this.rightNum = options.rightNum
+      this.ctx = wepy.createCanvasContext('share')
+    }
+  }
+</script>

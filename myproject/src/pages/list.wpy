@@ -1,0 +1,50 @@
+<style lang="less">
+
+</style>
+<template>
+  <web-view src="{{url}}"></web-view>
+  <!--<web-view src="https://html-regress.kaipao.cc/13933?noDlFootBar=true"></web-view>-->
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Home extends wepy.page {
+    config = {
+      navigationBarTitleText: 'test'
+    }
+    components = {
+    }
+    data = {
+      url: 'https://html-regress.kaipao.cc/h5-yaqu'
+    }
+
+    computed = {
+
+    }
+
+    methods = {
+
+    }
+
+    onLoad(option) {
+      if (option.url && option.url.length > 1) {
+        this.url = option.url
+        this.apply()
+      }
+    }
+    onShareAppMessage(options) {
+      // console.log(options.webViewUrl)
+      return {
+        title: '雅趣',
+        path: `/pages/list?url=${options.webViewUrl}`,
+        success: function(res) {
+          // 转发成功
+        },
+        fail: function(res) {
+          // 转发失败
+        }
+      }
+    }
+  }
+</script>

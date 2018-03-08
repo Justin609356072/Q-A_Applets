@@ -1,0 +1,269 @@
+<style lang="less">
+  @rotate-time: 10s;
+.que-card{
+  background: #fff;
+  width:630rpx;
+  height:810rpx;
+  position: absolute;
+  left:50%;
+  top:50%;
+  transform: translate(-50%,-50%);
+  border-radius:20rpx;
+}
+.que{
+  width:540rpx;
+  margin:120rpx auto 60rpx;
+  font-size:40rpx;
+  color:#192135;
+  font-weight:500;
+}
+.ans{
+  margin-bottom:50rpx;
+  border-radius:50rpx;
+  height:100rpx;
+  line-height:100rpx;
+  width:540rpx;
+  margin:30rpx auto;
+  background: rgb(236,236,236);
+  padding:0 50rpx;
+  box-sizing:border-box;
+}
+.success {
+  background: #00ff00;
+}
+.fail{
+  background: #ff0000;
+}
+.container{
+  display: block;
+  position: fixed;
+  top:0;
+  bottom:0;
+  left:0;
+  right:0;
+  background: #192135;
+}
+.count-down{
+  width:150rpx;
+  height:150rpx;
+  display: block;
+  position: absolute;
+  background: #ffffff;
+  left:50%;
+  transform:translate(-50%,-50%);
+  border-radius: 50%;
+  overflow:hidden;
+  .number{
+    display:block;
+    position:absolute;
+    z-index:100;
+    left:50%;
+    top:50%;
+    transform:translate(-50%, -50%);
+    width:125rpx;
+    height:125rpx;
+    background:#fff;
+    border-radius:50%;
+    text-align:center;
+    line-height:125rpx;
+    font-size:75rpx;
+    font-weight:500;
+  }
+  .harf-circile-1{
+    width:60%; /* 大于50% 防止白边 */
+    height:110%; /* 大于100% 防止白边 */
+    /*transform: translate(-2%,-2%);!* 防止白边 *!*/
+    position: absolute;
+    left:50%;
+    overflow:hidden;
+    .inner-rotate-1{
+      width:100%;
+      height:100%;
+      left:-100%;
+      background: rgb(214,31,85);
+      position:absolute;
+      animation: rotate_1 @rotate-time/2 linear forwards;
+    }
+  }
+  .rotate-2{
+    animation-delay:@rotate-time/2;
+    animation: rotate_2 @rotate-time/2 linear forwards;
+  }
+}
+@keyframes rotate_1
+{
+  0% {
+    transform: rotate(0deg);
+    transform-origin:100% 50%
+  }
+  50% {
+    transform: rotate(180deg);
+    transform-origin:100% 50%;
+  }
+  100% {
+    transform: rotate(180deg);
+    transform-origin:100% 50%;
+  }
+}
+@keyframes rotate_2
+{
+  0% {
+    transform: rotate(0deg);
+    transform-origin:0 50%
+  }
+  50% {
+    transform: rotate(0deg);
+    transform-origin:0 50%;
+  }
+  100% {
+    transform: rotate(179deg);
+    transform-origin:0 50%;
+  }
+}
+</style>
+<template>
+  <view class="container">
+    <repeat for="{{questionArr}}" key="index" index="index" item="item" >
+      <view class="que-card" wx:if="{{index==currentNum}}">
+        <view class="count-down">
+          <view class="harf-circile-1 rotate-2">
+            <view class="inner-rotate-1">
+            </view>
+          </view>
+          <view class="harf-circile-1">
+            <view class="inner-rotate-1">
+            </view>
+          </view>
+          <view class="number">
+            1
+          </view>
+        </view>
+        <view class="que">{{item.que}}</view>
+        <repeat for="{{[0,1,2,3]}}" key="indexInner" index="indexInner" item="itemInner" >
+          <view class="ans {{(item.ans===indexInner)&&(chooseStatus!=0)?'success':''}} {{(indexInner===chooseNum)?'fail':''}}" @tap="choose({{index}},{{indexInner}})">
+            {{item['ans'+indexInner]}}
+            <!-- -index={{index}}-chooseNum={{chooseNum}}-indexInner={{indexInner}}-->
+          </view>
+        </repeat>
+      </view>
+    </repeat>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  export default class Home extends wepy.page {
+    config = {
+      backgroundTextStyle: '#ffffff',
+      navigationBarBackgroundColor: '#192135',
+      navigationBarTitleText: '答题',
+      navigationBarTextStyle: '#ffffff'
+    }
+    components = {
+    }
+    data = {
+      questionArr: [
+        {
+          que: '问题11111111111111111？',
+          ans: 0,
+          ans1: '答案1',
+          ans2: '答案2',
+          ans3: '答案3',
+          ans0: '答案0'
+        },
+        {
+          que: '问题22222222222222222？',
+          ans: 1,
+          ans1: '答案11',
+          ans2: '答案22',
+          ans3: '答案33',
+          ans0: '答案00'
+        },
+        {
+          que: '问题333333333333333333？',
+          ans: 2,
+          ans1: '答案111',
+          ans2: '答案222',
+          ans3: '答案333',
+          ans0: '答案000'
+        },
+        {
+          que: '问题444444444444444？',
+          ans: 3,
+          ans1: '答案111',
+          ans2: '答案222',
+          ans3: '答案333',
+          ans0: '答案000'
+        }
+      ],
+      currentNum: 0, // 当前第几题，从0开始
+      ifChoose: false, // 当前一题是否已选
+      chooseNum: null, // 0,1,2,3 表示选的第几个
+      chooseStatus: 0, // 0-还未选，1选对了，2-选错了
+      rightNum: 0 // 总共对了几题
+    }
+
+    computed = {
+
+    }
+
+    methods = {
+      choose(index, ansNum) {
+        if (this.ifChoose) {
+          return
+        }
+        this.ifChoose = true
+        if (this.questionArr[index].ans === ansNum) {
+          this.chooseSuccess()
+        } else {
+          this.chooseFail(ansNum)
+        }
+      }
+    }
+
+    chooseSuccess() {
+      // console.log('选对了！')
+      this.chooseStatus = 1
+      this.rightNum++
+      this.nextChoose()
+    }
+
+    chooseFail(ansNum) {
+      // console.log('选错了！！')
+      this.chooseStatus = 2
+      // console.log(ansNum)
+      this.chooseNum = ansNum
+      this.nextChoose()
+    }
+
+    nextChoose() {
+      // console.log(this.questionArr.length, this.currentNum)
+      if (this.questionArr.length === this.currentNum + 1) { // 题做完，跳转到分享页面
+        let self = this
+        setTimeout(function() {
+          self.gotoSharePage()
+        }, 1000)
+        return
+      }
+      let self = this
+      setTimeout(function() {
+        // console.log(this)
+        self.currentNum++
+        self.ifChoose = false
+        self.chooseNum = null
+        self.chooseStatus = 0
+        self.ifChoose = false
+        self.$apply()
+      }, 1000)
+    }
+
+    gotoSharePage() {
+      let self = this
+      wepy.redirectTo({url: `/pages/share?rightNum=${self.rightNum}`})
+      // console.log('share!')
+    }
+
+    onLoad() {
+    }
+  }
+</script>
