@@ -2,6 +2,10 @@
   .canvas-container{
     display: none;
   }
+  .pink{
+    color:#d51f55;
+    position:absolute;
+  }
   .showShare{
     display: block;
     position: fixed;
@@ -19,9 +23,27 @@
       transform: translate(-50%,-50%);
       .canvas{
         display: block;
+        position:relative;
+        canvas{
+          /*height:888rpx;*/
+        }
       }
       .btn{
-        border:1px solid #000;
+        background:#fff;
+        width:400rpx;
+        height:100rpx;
+        margin:0 auto;
+        line-height:100rpx;
+        color:#212D45;
+        font-size:36rpx;
+        font-weight:500;
+        vertical-align: middle;
+        border-radius:50rpx;
+        position:relative;
+        .pink{
+          font-size: 50rpx;
+          left:60rpx;
+        }
       }
     }
   }
@@ -59,6 +81,23 @@
         color:#212D45;
         font-weight:500;
       }
+      .btn-group{
+        .btn{
+          width:400rpx;
+          height:100rpx;
+          border-radius:50rpx;
+          border:2px solid #000;
+          background:#fff;
+          box-shadow:0 5rpx #000;
+          margin-bottom:30rpx;
+          position:relative;
+          .pink{
+            font-size: 40rpx;
+            top:-4rpx;
+            left:50rpx;
+          }
+        }
+      }
     }
   }
 </style>
@@ -72,18 +111,30 @@
         您一共答对了{{rightNum}}题，获得{{honnerName}}称号！
       </view>
       <view class="btn-group">
-        <button @tap="share()">炫耀成绩</button>
-        <button open-type="share">考验朋友</button>
-        <button @tap="gotoList()">学习更多</button>
+        <button @tap="share()" class="btn">
+          <i class="dj-icon dj-icon-share pink"></i>
+          炫耀成绩
+        </button>
+        <button open-type="share" class="btn">
+          <i class="dj-icon dj-icon-fire pink"></i>
+          考验朋友
+        </button>
+        <button @tap="gotoList()" class="btn">
+          <i class="dj-icon dj-icon-list pink"></i>
+          学习更多
+        </button>
       </view>
     </view>
   </view>
   <view class="canvas-container {{showShare?'showShare':''}}" @tap="canvasOptions">
     <view class="inner-container" >
       <view class="canvas" @tap.stop="notHide">
-        <canvas style="width: 300px; height: 400px;" canvas-id="share" ></canvas>
+        <canvas style="width:300px;height:444px;" canvas-id="share" ></canvas>
       </view>
-      <view class="btn" @tap.stop="save">保存图片</view>
+      <view class="btn" @tap.stop="save">
+        <i class="dj-icon dj-icon-download pink"></i>
+        保存图片
+      </view>
     </view>
   </view>
 </template>
@@ -217,9 +268,18 @@
       }
     }
     onLoad(options) {
-      console.log(options)
-      this.rightNum = options.rightNum
-      this.ctx = wepy.createCanvasContext('share')
+      console.log(options);
+      this.rightNum = options.rightNum;
+      this.ctx = wepy.createCanvasContext('share');
+      /*wx.downloadFile({
+        url: 'https://app-regress.kaipao.cc/syui/img/logo.jpg', //仅为示例，并非真实的资源
+        success: function(res) {
+          // 只要服务器有响应数据，就会把响应内容写入文件并进入 success 回调，业务需要自行判断是否下载到了想要的内容
+          if (res.statusCode === 200) {
+            console.log(res);
+          }
+        }
+      })*/
     }
   }
 </script>
