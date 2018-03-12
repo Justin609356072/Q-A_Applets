@@ -69,9 +69,18 @@
         transform: translate(-50%,-50%);
         width:150rpx;
         height:150rpx;
-        border:1px solid red;
+        /*border:1px solid red;*/
         background: #fff;
         border-radius: 50%;
+        image{
+          width:85%;
+          height:85%;
+          border-radius:50%;
+          position:absolute;
+          top:50%;
+          left:50%;
+          transform:translate(-50%,-50%);
+        }
       }
       .score{
         margin:150rpx 50rpx 100rpx;
@@ -103,7 +112,7 @@
   <view class="container">
     <view class="card">
       <view class="circle">
-
+        <image src="{{headImg}}" wx:if="{{headImg}}"></image>
       </view>
       <view class="score">
         您一共答对了{{rightNum}}题，获得{{honnerName}}称号！
@@ -150,6 +159,7 @@
     components = {
     }
     data = {
+      headImg:null,
       rightNum: 0,
       showShare: false,
       ctx: null
@@ -266,9 +276,12 @@
       }
     }
     onLoad(options) {
+      let self = this;
       console.log(options);
-      this.rightNum = options.rightNum;
-      this.ctx = wepy.createCanvasContext('share');
+      self.rightNum = options.rightNum;
+      self.ctx = wepy.createCanvasContext('share');
+      let userInfo = wepy.getStorageSync('UserInfo');
+      self.headImg = userInfo.avatarUrl;
       /*wx.downloadFile({
         url: 'https://app-regress.kaipao.cc/syui/img/logo.jpg', //仅为示例，并非真实的资源
         success: function(res) {

@@ -18,23 +18,41 @@
   font-weight:500;
 }
 .ans{
-  margin-bottom:50rpx;
   border-radius:50rpx;
   height:100rpx;
   line-height:100rpx;
   width:540rpx;
   margin:30rpx auto;
   background: rgb(236,236,236);
-  padding:0 50rpx;
   box-sizing:border-box;
+  transition: background-color 2s;
+  position: relative;
+  overflow: hidden;
+  .background{
+    position:absolute;
+    height:100rpx;
+    /*border:1px solid #000;*/
+    /*transform:translate(-120%, 0);*/
+    transform:translate(0%, 0);
+    z-index:100;
+    width:120%;
+    transition: background-color 0.2s ease;
+  }
+/*  .choose{
+    transform:translate(0%, 0);
+  }*/
+  .fontground{
+    padding:0 50rpx;
+    position: absolute;
+    height: 100 rpx;
+    z-index:200;
+  }
 }
 .success {
-  /*background: #00ff00;*/
   background: linear-gradient(to right, rgb(65,70,100), rgb(100,105,165));
   color:#fff;
 }
 .fail{
-  /*background: #ff0000;*/
   background: linear-gradient(to right, rgb(183,172,110), rgb(220,210,150));
   color:#fff;
 }
@@ -129,16 +147,16 @@
 }
 </style>
 <template>
-  <view class="container">
+  <view class="container" wx:if="!firstIn">
     <repeat for="{{questionArr}}" key="index" index="index" item="item" >
       <view class="que-card" wx:if="{{index==currentNum}}">
         <view class="count-down">
-          <view class="harf-circile-1 rotate-2" style="animation-play-state:{{ifChoose?'paused':'running'}}">
-            <view class="inner-rotate-1" style="animation-play-state:{{ifChoose?'paused':'running'}}">
+          <view class="harf-circile-1 rotate-2" style="{{ifAnimationStop}}">
+            <view class="inner-rotate-1" style="{{ifAnimationStop}}">
             </view>
           </view>
           <view class="harf-circile-1">
-            <view class="inner-rotate-1" style="animation-play-state:{{ifChoose?'paused':'running'}}">
+            <view class="inner-rotate-1" style="{{ifAnimationStop}}">
             </view>
           </view>
           <view class="number">
@@ -147,8 +165,9 @@
         </view>
         <view class="que">{{item.que}}</view>
         <repeat for="{{[0,1,2,3]}}" key="indexInner" index="indexInner" item="itemInner" >
-          <view class="ans {{(item.ans===indexInner)&&(chooseStatus!=0)?'success':''}} {{(indexInner===chooseNum)?'fail':''}}" @tap="choose({{index}},{{indexInner}})">
-            {{item['ans'+indexInner]}}
+          <view class="ans" @tap="choose({{index}},{{indexInner}})">
+            <view class="background {{(item.ans===indexInner)&&(chooseStatus!=0)?'success choose ':''}} {{(indexInner===chooseNum)?'fail choose ':''}}"></view>
+            <view class="fontground">{{item['ans'+indexInner]}}</view>
             <!-- -index={{index}}-chooseNum={{chooseNum}}-indexInner={{indexInner}}-->
           </view>
         </repeat>
@@ -206,15 +225,21 @@
       currentNum: 0, // 当前第几题，从0开始
       ifChoose: false, // 当前一题是否已选
       chooseNum: null, // 0,1,2,3 表示选的第几个
-      chooseStatus: 0, // 0-还未选，1选对了，2-选错了
+      chooseStatus: 0, // 0-还未选，1选对了，2-选错了，3-超时未选
       rightNum: 0 ,// 总共对了几题
       countDownTime: 10 ,//倒计时总秒数
       nowCountDownTime: 10,//当前计时秒数
-      interval:null //存放计时器
+      interval:null ,//存放计时器
+      firstIn:true
     }
 
     computed = {
-
+      ifAnimationStop() {//苹果上显示有bug
+        return `
+        animation-play-state:${this.ifChoose?'paused':'running'};
+        -webkit-animation-play-state:${this.ifChoose?'paused':'running'};
+        `
+      }
     }
 
     methods = {
@@ -248,7 +273,9 @@
     }
 
     notChoose() {//时间到未做出选择
-      this.chooseStatus = 2;
+      console.log('notChoose');
+      this.chooseStatus = 3;
+      this.$apply();
       this.nextChoose();
     }
 
@@ -268,7 +295,6 @@
         self.ifChoose = false
         self.chooseNum = null
         self.chooseStatus = 0
-        self.ifChoose = false
         self.nowCountDownTime = self.countDownTime
         self.$apply()
         self.startInterval();
@@ -285,7 +311,7 @@
           self.$apply();
         }else {// 倒计时结束还未做出选择
           self.ifChoose = true;
-          clearInterval(self.interval)
+          clearInterval(self.interval);
           self.notChoose()
         }
       },1000)
@@ -295,10 +321,32 @@
       wepy.redirectTo({url: `/pages/share?rightNum=${self.rightNum}`})
       // console.log('share!')
     }
-
+    onUnload() {
+      let self = this;
+      console.log('onUnload');
+      console.log(self);
+      clearInterval(self.interval);
+      /*self = Object.assign(self,{
+        currentNum: 0, // 当前第几题，从0开始
+        ifChoose: false, // 当前一题是否已选
+        chooseNum: null, // 0,1,2,3 表示选的第几个
+        chooseStatus: 0, // 0-还未选，1选对了，2-选错了，3-超时未选
+        rightNum: 0 ,// 总共对了几题
+        countDownTime: 10 ,//倒计时总秒数
+        nowCountDownTime: 10,//当前计时秒数
+        interval:null //存放计时器
+      })*/
+    }
+    onReady() {//用来解决第一次进入倒计时转圈不显示的问题
+      console.log('onReady');
+      if(this.firstIn){
+        this.firstIn = false;
+        this.$apply();
+      }
+    }
     onLoad() {
-        let self = this;
-        self.startInterval();
+      let self = this;
+      self.startInterval();
     }
   }
 </script>

@@ -122,6 +122,16 @@
       let self = this;
       let userInfo = wepy.getStorageSync('UserInfo');
       self.headImg = userInfo.avatarUrl;
+      self.interval = setInterval(function(){
+        let userInfo = wepy.getStorageSync('UserInfo');
+        console.log(userInfo);
+        if(userInfo){
+          self.headImg = userInfo.avatarUrl;
+          self.$apply();
+          clearInterval(self.interval);
+        }
+      },100);
+
       /*self.$parent.getUserInfo(function (userInfo) {
         console.log(userInfo)
         self.headImg = userInfo.avatarUrl;
