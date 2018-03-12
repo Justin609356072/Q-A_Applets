@@ -25,16 +25,57 @@
       }
     }
   }
+  .container{
+    display: block;
+    position: fixed;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    background:rgb(25,33,53);
+    .card{
+      width:600rpx;
+      margin:;
+      display:;
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-50%);
+      background:#fff;
+      border-radius:20rpx;
+      .circle{
+        position: absolute;
+        left:50%;
+        transform: translate(-50%,-50%);
+        width:150rpx;
+        height:150rpx;
+        border:1px solid red;
+        background: #fff;
+        border-radius: 50%;
+      }
+      .score{
+        margin:150rpx 50rpx 100rpx;
+        font-size:36rpx;
+        color:#212D45;
+        font-weight:500;
+      }
+    }
+  }
 </style>
 <template>
   <view class="container">
-    <view class="score">
-      您一共答对了{{rightNum}}题，获得{{honnerName}}称号！
-    </view>
-    <view class="btn-group">
-      <button @tap="share()">炫耀成绩</button>
-      <button open-type="share">考验朋友</button>
-      <button @tap="gotoList()">学习更多</button>
+    <view class="card">
+      <view class="circle">
+
+      </view>
+      <view class="score">
+        您一共答对了{{rightNum}}题，获得{{honnerName}}称号！
+      </view>
+      <view class="btn-group">
+        <button @tap="share()">炫耀成绩</button>
+        <button open-type="share">考验朋友</button>
+        <button @tap="gotoList()">学习更多</button>
+      </view>
     </view>
   </view>
   <view class="canvas-container {{showShare?'showShare':''}}" @tap="canvasOptions">
@@ -52,7 +93,10 @@
 
   export default class Share extends wepy.page {
     config = {
-      navigationBarTitleText: 'test'
+      backgroundTextStyle: '#ffffff',
+      navigationBarBackgroundColor: '#192135',
+      navigationBarTitleText: '答题',
+      navigationBarTextStyle: '#ffffff'
     }
     components = {
     }
