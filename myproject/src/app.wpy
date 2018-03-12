@@ -1,6 +1,7 @@
 <style lang="less">
-  @font-face {font-family: "iconfont";
-    url('data:application/x-font-woff;charset=utf-8;base64,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') format('woff'),
+  @font-face {/*font-family: "iconfont";*/
+    /*src: url('//at.alicdn.com/t/font_585423_y4euyluswhppsyvi.eot?t=1520833414143#iefix') format('embedded-opentype'), !* IE6-IE8 *!*/
+    url('data:application/x-font-woff;charset=utf-8;base64,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') format('woff');
   }
 
   .dj-icon{
@@ -11,13 +12,20 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  .dj-icon-download::before {content: "&#xe629;";}
-  .dj-icon-success:before {content: "&#xe637;";}
-  .dj-icon-fail:before {content: "&#xe624;";}
-  .dj-icon-list:before {content: "&#xe62e;";}
-  .dj-icon-fire:before {content: "&#xe6e7;";}
-  .dj-icon-share:before {content: "&#xe617;";}
-  .dj-icon-start:before {content: "&#xe6dd;";}
+  .dj-icon-start:before { content: "\e6dd"; }
+
+  .dj-icon-download:before { content: "\e629"; }
+
+  .dj-icon-share:before { content: "\e617"; }
+
+  .dj-icon-fire:before { content: "\e6e7"; }
+
+  .dj-icon-list:before { content: "\e62e"; }
+
+  .dj-icon-fail:before { content: "\e624"; }
+
+  .dj-icon-success:before { content: "\e637"; }
+
 </style>
 
 <script>
@@ -33,9 +41,9 @@ setStore(store)
 export default class extends wepy.app {
   config = {
     pages: [
+      'pages/home',
       'pages/share',
       'pages/question',
-      'pages/home',
       'pages/list',
       'pages/index'
     ],
@@ -58,7 +66,9 @@ export default class extends wepy.app {
 
   onLaunch() {
     // this.testAsync()
-    this.getUserInfo()
+    let self = this;
+    self.getUserInfo()
+
   }
 
   /* sleep (s) {
@@ -74,15 +84,15 @@ export default class extends wepy.app {
     console.log(data)
   } */
 
-  getUserInfo(cb) {
+  getUserInfo() {
     const that = this
-    if (this.globalData.userInfo) {
-      return this.globalData.userInfo
+    if (wepy.getStorageSync('UserInfo')) {
+      return
     }
     wepy.getUserInfo({
       success (res) {
         that.globalData.userInfo = res.userInfo
-        cb && cb(res.userInfo)
+        wepy.setStorageSync('UserInfo',res.userInfo)
       }
     })
   }

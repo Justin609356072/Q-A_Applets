@@ -57,8 +57,6 @@
     background:rgb(25,33,53);
     .card{
       width:600rpx;
-      margin:;
-      display:;
       position:absolute;
       left:50%;
       top:50%;

@@ -1,25 +1,94 @@
 <style lang="less">
   .container{
-
-  }
-  .btn-group{
+    display: block;
     position: fixed;
-    bottom: 0;
-    width:100%;
-    margin-bottom:140rpx;
-    .btn{
-      background: transparent;
-      width:80%;
-      margin-bottom:30rpx;
-      color: #666;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    background:rgb(25,33,53);
+    .card{
+      width:650rpx;
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-50%);
+      background:#fff;
+      border-radius:20rpx;
+      padding-bottom:50rpx;
+      .circle{
+        position: absolute;
+        left:50%;
+        transform: translate(-50%,-50%);
+        width:150rpx;
+        height:150rpx;
+        /*border:1px solid red;*/
+        background: #fff;
+        border-radius: 50%;
+        font-size:20rpx;
+        line-height:150rpx;
+        padding:0 30rpx;
+        box-sizing:border-box;
+        image{
+          width:85%;
+          height:85%;
+          border-radius:50%;
+          position:absolute;
+          top:50%;
+          left:50%;
+          transform:translate(-50%,-50%);
+        }
+      }
+      .score{
+        margin:150rpx 50rpx 100rpx;
+        font-size:36rpx;
+        color:#212D45;
+        font-weight:500;
+      }
+      .btn-group{
+        .btn{
+          width:400rpx;
+          height:100rpx;
+          border-radius:50rpx;
+          border:2px solid #000;
+          background:#fff;
+          box-shadow:0 5rpx #000;
+          margin-bottom:30rpx;
+          position:relative;
+          .pink{
+            font-size: 40rpx;
+            top:-4rpx;
+            left:50rpx;
+          }
+        }
+      }
     }
+  }
+  .pink{
+    color:#d51f55;
+    position:absolute;
   }
 </style>
 <template>
   <view class="container">
-    <view class="btn-group">
-      <button class="btn" @tap="gotoPage('question')">开始答题</button>
-      <button class="btn" @tap="gotoPage('list')">知识列表</button>
+    <view class="card">
+      <view class="circle">
+        loading...
+        <image src="{{headImg}}" wx:if="{{headImg}}"></image>
+      </view>
+      <view class="score">
+        欢迎来到雅趣的答题竞技场，挑战一下自己吧。
+      </view>
+      <view class="btn-group">
+        <button class="btn" @tap="gotoPage('question')">
+          <i class="dj-icon dj-icon-start icon-jiediankaishi pink"></i>
+          开始答题
+        </button>
+        <button class="btn" @tap="gotoPage('list')">
+          <i class="dj-icon dj-icon-list pink"></i>
+          知识列表
+        </button>
+      </view>
     </view>
   </view>
 </template>
@@ -33,7 +102,9 @@
     }
     components = {
     }
-    data = {}
+    data = {
+      headImg:null
+    }
 
     computed = {
 
@@ -48,9 +119,16 @@
     }
 
     onLoad() {
-      this.$parent.getUserInfo(function (userInfo) {
+      let self = this;
+      let userInfo = wepy.getStorageSync('UserInfo');
+      self.headImg = userInfo.avatarUrl;
+      /*self.$parent.getUserInfo(function (userInfo) {
         console.log(userInfo)
-      })
+        self.headImg = userInfo.avatarUrl;
+        console.log('hah');
+        console.log(self);
+        self.$apply();
+      })*/
     }
   }
 </script>
