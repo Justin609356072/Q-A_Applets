@@ -81,7 +81,7 @@
       </view>
       <view class="btn-group">
         <button class="btn" @tap="gotoPage('question')">
-          <i class="dj-icon dj-icon-start icon-jiediankaishi pink"></i>
+          <i class="dj-icon dj-icon-start icon-start pink"></i>
           开始答题
         </button>
         <button class="btn" @tap="gotoPage('list')">

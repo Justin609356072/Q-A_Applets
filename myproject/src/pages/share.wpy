@@ -13,7 +13,7 @@
     left:0;
     width:100%;
     height:100%;
-    background: rgba(0,0,0,0.1);
+    background: rgba(0,0,0,0.7);
     /*border:1px solid #000;*/
     text-align: center;
     .inner-container{
@@ -161,22 +161,39 @@
     data = {
       headImg:null,
       rightNum: 0,
+      level:0,
       showShare: false,
-      ctx: null
+      ctx: null,
+      canvasImageUrl:{
+        head:null,
+        bgHead:null,
+        bigImg:'https://html-regress.kaipao.cc/syui/img/logo.jpg',
+        QRcode:'https://html-regress.kaipao.cc/syui/img/logo.jpg'
+      },
+      canvasImageLocalUrl:{//保存本地的url地址
+        head:null,
+        bgHead:null,
+        bigImg:null,
+        QRcode:null
+      }
     }
 
     computed = {
       honnerName() {
         if (this.rightNum < 3) {
+          this.level = 0;
           return '青铜宝宝'
         }
         if (this.rightNum < 6) {
+          this.level = 1;
           return '黄金答题者'
         }
         if (this.rightNum < 9) {
+          this.level = 2;
           return '钻石答题者'
         }
         if (this.rightNum > 9) {
+          this.level = 3;
           return '最强王者'
         }
       }
@@ -187,19 +204,42 @@
         wepy.navigateTo({url: `/pages/list`})
       },
       share() {
-        this.showShare = true
-        this.$apply()
-        console.log(this)
+        let self = this;
+        console.log(self)
 
-        this.ctx.setFillStyle('#ffffff')
-        this.ctx.rect(0, 0, 300, 400)
-        this.ctx.fill()
-        this.ctx.drawImage('/img/logo.jpg', 200, 300, 100, 100)
-        // this.ctx.draw(true)
-        this.ctx.setFillStyle('#000000')
-        this.ctx.setFontSize(80)
-        this.ctx.fillText('Hello', 80, 80)
-        this.ctx.draw()
+        self.ctx.setFillStyle('#ffffff')
+        self.ctx.rect(0, 0, 300, 400)
+        self.ctx.fill()
+//        self.ctx.drawImage('/img/logo.jpg', 200, 300, 100, 100)
+        self.ctx.drawImage(self.canvasImageLocalUrl.QRcode, 110, 310, 80, 80)//小程序码
+        self.ctx.drawImage(self.canvasImageLocalUrl.bigImg, 50, 100, 200, 200)//中间图片
+
+        self.ctx.save()
+        self.ctx.beginPath()
+        self.ctx.arc(50, 50, 25, 0, 2*Math.PI)
+        self.ctx.clip()
+        self.ctx.drawImage(self.canvasImageLocalUrl.head, 25, 25,50,50)
+        self.ctx.restore()
+//        self.ctx.draw()
+
+        /*self.ctx.save()//头像
+        self.ctx.beginPath()
+        self.ctx.arc(45, 55, 25, 0, 2*Math.PI)
+        self.ctx.clip()
+        self.ctx.drawImage(self.headImg, 20, 30, 50, 50)
+        self.ctx.restore()
+        self.ctx.draw()*/
+
+
+        // 文字
+        self.ctx.setFillStyle('#000000')
+        self.ctx.setFontSize(13)
+        self.ctx.fillText(`我在雅趣答题答对了${self.rightNum}道题,获得了`, 80, 45)
+        self.ctx.fillText(`${self.honnerName}称号，快来挑战我吧。`, 80, 65)
+        self.ctx.draw()
+
+        self.showShare = true
+        self.$apply()
       },
       canvasOptions(event) {
         console.log(event)
@@ -251,7 +291,66 @@
         }
       }
     }
+/*
 
+    canvasImageUrl:{
+      head:null,
+      bgHead:null,
+      bigImg:'https://app-regress.kaipao.cc/syui/img/logo.jpg',
+      QRcode:'https://app-regress.kaipao.cc/syui/img/logo.jpg'
+    },
+    canvasImageLocalUrl:{//保存本地的url地址
+      head:null,
+      bgHead:null,
+      bigImg:null,
+      QRcode:null
+    }
+
+
+*/
+
+
+
+    confirmImgUrl() {//确定变化图片的URL
+      let self = this;
+      // 按等级确定头像背景
+//      self.canvasImageUrl.bgHead = `https://html-regress.kaipao.cc/syui/img/xcxQuestion/headLevel${self.level}.jpeg`;
+      // 随机确定中间图片
+//      self.canvasImageUrl.bigImg = `https://html-regress.kaipao.cc/syui/img/xcxQuestion/img${Math.floor(Math.random()*10)}.jpeg`;
+    }
+    downloadFile() {//下载绘图用的img
+      let self = this;
+      wx.downloadFile({
+        url: self.canvasImageUrl.bigImg,
+        success: function(res) {
+          if (res.statusCode === 200) {
+            //console.log(res);
+            self.canvasImageLocalUrl.bigImg = res.tempFilePath;
+            //console.log(self.canvasImageLocalUrl);
+          }
+        }
+      })
+      wx.downloadFile({
+        url: self.canvasImageUrl.QRcode,
+        success: function(res) {
+          if (res.statusCode === 200) {
+//            console.log(res);
+            self.canvasImageLocalUrl.QRcode = res.tempFilePath;
+//            console.log(self.canvasImageLocalUrl);
+          }
+        }
+      })
+      wx.downloadFile({
+        url: self.canvasImageUrl.head,
+        success: function(res) {
+          if (res.statusCode === 200) {
+//            console.log(res);
+            self.canvasImageLocalUrl.head = res.tempFilePath;
+//            console.log(self.canvasImageLocalUrl);
+          }
+        }
+      })
+    }
     onShareAppMessage(options) {
       // console.log(options.webViewUrl)
       return {
@@ -278,19 +377,14 @@
     onLoad(options) {
       let self = this;
       console.log(options);
-      self.rightNum = options.rightNum;
+      self.rightNum = options.rightNum?options.rightNum:0;
       self.ctx = wepy.createCanvasContext('share');
       let userInfo = wepy.getStorageSync('UserInfo');
       self.headImg = userInfo.avatarUrl;
-      /*wx.downloadFile({
-        url: 'https://app-regress.kaipao.cc/syui/img/logo.jpg', //仅为示例，并非真实的资源
-        success: function(res) {
-          // 只要服务器有响应数据，就会把响应内容写入文件并进入 success 回调，业务需要自行判断是否下载到了想要的内容
-          if (res.statusCode === 200) {
-            console.log(res);
-          }
-        }
-      })*/
+      self.canvasImageUrl.head = userInfo.avatarUrl;
+      console.log(self.headImg);
+      self.confirmImgUrl();
+      self.downloadFile();
     }
   }
 </script>

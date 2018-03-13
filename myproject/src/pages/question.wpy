@@ -115,6 +115,14 @@
 .stop{
   animation-play-state:paused;
 }
+.dj-icon{
+  color: #fff;
+  position:absolute;
+  left:430rpx;
+}
+.chooseText{
+  color: #fff;
+}
 @keyframes rotate_1
 {
   0% {
@@ -166,8 +174,10 @@
         <view class="que">{{item.que}}</view>
         <repeat for="{{[0,1,2,3]}}" key="indexInner" index="indexInner" item="itemInner" >
           <view class="ans" @tap="choose({{index}},{{indexInner}})">
-            <view class="background {{(item.ans===indexInner)&&(chooseStatus!=0)?'success choose ':''}} {{(indexInner===chooseNum)?'fail choose ':''}}"></view>
-            <view class="fontground">{{item['ans'+indexInner]}}</view>
+            <view class="background {{(item.ans===indexInner)&&(chooseStatus!=0)?'success choose ':''}} {{(indexInner===chooseNum)?'fail choose ':''}}">
+              <i class="dj-icon {{(item.ans===indexInner)&&(chooseStatus!=0)?'dj-icon-success':''}} {{(indexInner===chooseNum)?'dj-icon-fail':''}}"></i>
+            </view>
+            <view class="fontground {{(item.ans===indexInner)&&(chooseStatus!=0)||(indexInner===chooseNum)?'chooseText':''}}">{{item['ans'+indexInner]}}</view>
             <!-- -index={{index}}-chooseNum={{chooseNum}}-indexInner={{indexInner}}-->
           </view>
         </repeat>
@@ -234,7 +244,7 @@
     }
 
     computed = {
-      ifAnimationStop() {//苹果上显示有bug
+      ifAnimationStop() {//苹果上显示有bug，倒计时转圈停不下来
         return `
         animation-play-state:${this.ifChoose?'paused':'running'};
         -webkit-animation-play-state:${this.ifChoose?'paused':'running'};
