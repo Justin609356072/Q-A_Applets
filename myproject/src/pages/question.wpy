@@ -3,7 +3,7 @@
 .que-card{
   background: #fff;
   width:630rpx;
-  height:810rpx;
+  /*height:810rpx;*/
   position: absolute;
   left:50%;
   top:50%;
@@ -155,9 +155,9 @@
 }
 </style>
 <template>
-  <view class="container" wx:if="!firstIn">
+  <view class="container">
     <repeat for="{{questionArr}}" key="index" index="index" item="item" >
-      <view class="que-card" wx:if="{{index==currentNum}}">
+      <view class="que-card" wx:if="{{index==currentNum&&(!firstIn)}}">
         <view class="count-down">
           <view class="harf-circile-1 rotate-2" style="{{ifAnimationStop}}">
             <view class="inner-rotate-1" style="{{ifAnimationStop}}">
@@ -200,36 +200,84 @@
     data = {
       questionArr: [
         {
-          que: '问题11111111111111111？',
-          ans: 0,
-          ans1: '答案1',
-          ans2: '答案2',
-          ans3: '答案3',
-          ans0: '答案0'
-        },
-        {
-          que: '问题22222222222222222？',
-          ans: 1,
-          ans1: '答案11',
-          ans2: '答案22',
-          ans3: '答案33',
-          ans0: '答案00'
-        },
-        {
-          que: '问题333333333333333333？',
-          ans: 2,
-          ans1: '答案111',
-          ans2: '答案222',
-          ans3: '答案333',
-          ans0: '答案000'
-        },
-        {
-          que: '问题444444444444444？',
+          que: '以下那种茶被称为红茶的鼻祖？',
           ans: 3,
-          ans1: '答案111',
-          ans2: '答案222',
-          ans3: '答案333',
-          ans0: '答案000'
+          ans0: '金骏眉',
+          ans1: '祁门红茶',
+          ans2: '坦洋工夫',
+          ans3: '正山小种'
+        },
+        {
+          que: '在《楚辞·九歌》中：“夫人自有兮美子，荪何以兮愁苦？”荪，指的是',
+          ans: 2,
+          ans1: '竹叶',
+          ans2: '菖蒲',
+          ans3: '仙人掌',
+          ans0: '艾草'
+        },
+        {
+          que: '以下不是龙之九子的是哪一个？',
+          ans: 3,
+          ans0: '负屃',
+          ans1: '囚牛',
+          ans2: '蒲牢',
+          ans3: '螭猊',
+        },
+        {
+          que: '陶土是陶瓷生产的主要原料，以下不属于陶土分类的是？',
+          ans: 0,
+          ans0: '灰泥',
+          ans1: '甲泥',
+          ans2: '白泥',
+          ans3: '嫩泥'
+        },
+        {
+          que: '四大名玉中产自新疆的是以下哪一个？',
+          ans: 1,
+          ans0: '岫玉',
+          ans1: '和田玉',
+          ans2: '独山玉',
+          ans3: '蓝田玉',
+        },
+        {
+          que: '以下不属于核雕的手法的是',
+          ans: 3,
+          ans0: '圆雕',
+          ans1: '浮雕',
+          ans2: '镂空雕',
+          ans3: '侧雕',
+        },
+        {
+          que: '以下玉石中最硬的是？',
+          ans: 0,
+          ans0: '玛瑙',
+          ans1: '和田玉',
+          ans2: '萤石',
+          ans3: '大理石',
+        },
+        {
+          que: '墨锭，是将墨团分成小块放入铜模或木头模后，压成墨锭作为书画类用品的。那么，"墨锭"这两个字笔画一共有多少？',
+          ans: 2,
+          ans0: '33',
+          ans1: '26',
+          ans2: '28',
+          ans3: '34',
+        },
+        {
+          que: '出题好头疼，不出了，这题选第三个！',
+          ans: 2,
+          ans0: '第一个',
+          ans1: '第二个',
+          ans2: '第三个',
+          ans3: '第四个',
+        },
+        {
+          que: '请问这个小程序的作者是？',
+          ans: 1,
+          ans0: '东家王宝强',
+          ans1: '东家赵又廷',
+          ans2: '东家吴彦祖',
+          ans3: '东家周杰伦',
         }
       ],
       currentNum: 0, // 当前第几题，从0开始
@@ -348,10 +396,12 @@
       })*/
     }
     onReady() {//用来解决第一次进入倒计时转圈不显示的问题
-      console.log('onReady');
-      if(this.firstIn){
-        this.firstIn = false;
-        this.$apply();
+      console.log('onReady123');
+      let self = this;
+      console.log(self.firstIn);
+      if(self.firstIn){
+        self.firstIn = false;
+        self.$apply();
       }
     }
     onLoad() {
