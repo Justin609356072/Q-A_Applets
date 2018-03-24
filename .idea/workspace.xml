@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7d3c78db-4c6d-4a08-8be8-b7c980ac3ef9" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/myproject/src/pages/home.wpy" afterPath="$PROJECT_DIR$/myproject/src/pages/home.wpy" />
-    </list>
+    <list default="true" id="7d3c78db-4c6d-4a08-8be8-b7c980ac3ef9" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
     <ignored path="$PROJECT_DIR$/tmp/" />
@@ -127,12 +125,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1521906806118</updated>
-      <workItem from="1521906807340" duration="26000" />
+      <workItem from="1521906807340" duration="130000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="26000" />
+    <option name="totallyTimeSpent" value="130000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
