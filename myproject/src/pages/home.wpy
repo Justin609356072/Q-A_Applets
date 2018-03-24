@@ -105,11 +105,6 @@
     data = {
       headImg:null
     }
-
-    computed = {
-
-    }
-
     methods = {
       gotoPage (page) {
         wepy.navigateTo({
@@ -117,7 +112,6 @@
         })
       }
     }
-
     onLoad() {
       let self = this;
       let userInfo = wepy.getStorageSync('UserInfo');
